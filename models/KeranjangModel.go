@@ -13,7 +13,14 @@ type TblKeranjang struct {
 	Stok 			float32			`json:"stok"`
 }
 
+type GrafikKeranjang struct{
+	Bulan string `json:"bulan"`
+	Jumlah int32 `json:"jumlah"`
+}
+
 func (TblKeranjang) TableName() string {
 	return "tbl_keranjang"
 }
+
+
 

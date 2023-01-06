@@ -31,33 +31,42 @@ func init() {
 	conntransaksi = setup.ConnectDB()
 }
 
+func GetGrafikProdukTahuna() ([]GrafikKeranjang, *gorm.DB) {
+	var keranjang []GrafikKeranjang
+
+	conntransaksi.Table("tbl_keranjang").Select("sum(jumlah) as jumlah,MONTH(tgl) as bulan").Group("MONTH(tgl)").Find(&keranjang)
+	return keranjang, conntransaksi
+}
+
+func JumlahTransaksiKeluar() float32 {
+
+	var total float32
+	row := conntransaksi.Table("tbl_keranjang").Select("sum(jumlah*harga)").Row()
+	row.Scan(&total)
+	return total
+}
+
 func GetDataTransaksiAll() ([]TblTranasksi, *gorm.DB) {
 	var result []TblTranasksi
 	query := conntransaksi.Preload("RegistrasiModel").Find(&result)
 	return result, query
 }
 
-func GetDataTransaksiMonth(start string,end string) ([]TblTranasksi, *gorm.DB) {
+func GetDataTransaksiMonth(start string, end string) ([]TblTranasksi, *gorm.DB) {
 	var result []TblTranasksi
-	query := conntransaksi.Preload("RegistrasiModel").Where("tgl between ? and ?",start,end).Find(&result)
+	query := conntransaksi.Preload("RegistrasiModel").Where("tgl between ? and ?", start, end).Find(&result)
 	return result, query
 }
 
-func GetDataTransaksiYear(start string,end string) ([]TblTranasksi, *gorm.DB) {
+func GetDataTransaksiYear(start string, end string) ([]TblTranasksi, *gorm.DB) {
 	var result []TblTranasksi
-	query := conntransaksi.Preload("RegistrasiModel").Where("YEAR(tgl) between ? and ?",start,end).Find(&result)
+	query := conntransaksi.Preload("RegistrasiModel").Where("YEAR(tgl) between ? and ?", start, end).Find(&result)
 	return result, query
 }
 func GetDataTransaksi(row *TblTranasksi) []TblTranasksi {
 	var result []TblTranasksi
 	conntransaksi.Preload("RegistrasiModel").Where(&row).Find(&result)
 	return result
-}
-
-func Getrumus(a int32, b int32) (persegi int32, segitiga int32) {
-	persegi = a * b
-	segitiga = a + b
-	return persegi, segitiga
 }
 
 func ProdukTransaksi(row *TblKeranjang) []TblKeranjang {

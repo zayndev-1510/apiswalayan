@@ -18,13 +18,11 @@ type ProdukKeluar struct{
 func init(){
 	connprodukkeluar=setup.ConnectDB()
 }
-func JumlahProdukKeluar()(int32,float32){
+func JumlahProdukKeluar()int32{
 	var jumlah int32
-	var total float32
-	db.Table("tbl_keranjang").Select("sum(jumlah) as stok").Row().Scan(&jumlah)
-	db.Table("tbl_keranjang").Select("sum(jumlah*harga) a s total").Row().Scan(&total)
-
-	return jumlah,total
+	row:=db.Table("tbl_keranjang").Select("sum(jumlah) as stok").Row()
+	row.Scan(&jumlah)
+	return jumlah
 
 }
 func DataProdukKeluaur() ([] ProdukKeluar,*gorm.DB){

@@ -34,6 +34,13 @@ func (ProdukMasukModel) TableName() string {
 func init() {
 	dbprodukmasuk = setup.ConnectDB()
 }
+func GetGrafikProdukMasukTahunan() ([]GrafikKeranjang, *gorm.DB) {
+	var keranjang []GrafikKeranjang
+
+	dbprodukmasuk.Table("tbl_produk_masuk").Select("sum(jumlah) as jumlah,MONTH(tgl) as bulan").Group("MONTH(tgl)").Find(&keranjang)
+	return keranjang, dbprodukmasuk
+}
+
 func JumlahProdukMasuk()(int32){
 	var stok int32
 	row:=db.Table("tbl_produk_masuk").Select("sum(jumlah) as stok").Row()

@@ -39,6 +39,13 @@ func init() {
 	connkasir = setup.ConnectDB()
 }
 
+func JumlahKasir()int32{
+	var kasir int32
+	row:=db.Table("tbl_kasir").Select("COUNT(*)").Row()
+	row.Scan(&kasir)
+	return kasir
+
+}
 func DataKasir() ([]DataRelasi, *gorm.DB) {
 	var result []DataRelasi
 	x := conntransaksi.Table("tbl_login as login").
